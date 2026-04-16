@@ -32,38 +32,6 @@
           ]
         },
         {
-          "id": "mo0vptfbsb4t",
-          "name": "개발",
-          "open": true,
-          "items": [
-            {
-              "id": "mo0vptfb33ys",
-              "label": "코딩 컨벤션 준수",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfb7n99",
-              "label": "예외 처리 확인",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbpyfg",
-              "label": "단위 테스트 작성",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfb8tpv",
-              "label": "코드 리뷰 완료",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbnio5",
-              "label": "하드코딩 제거",
-              "checked": false
-            }
-          ]
-        },
-        {
           "id": "mo0vptfb4638",
           "name": "테스트",
           "open": true,
