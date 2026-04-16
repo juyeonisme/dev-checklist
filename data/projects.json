@@ -30,38 +30,6 @@
               "checked": false
             }
           ]
-        },
-        {
-          "id": "mo0vptfb7dt1",
-          "name": "배포",
-          "open": true,
-          "items": [
-            {
-              "id": "mo0vptfb4mtb",
-              "label": "환경변수/설정 파일 확인",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbu87o",
-              "label": "DB 마이그레이션 순서 확인",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbdwyl",
-              "label": "배포 전 백업",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbkals",
-              "label": "배포 후 로그 모니터링",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbptlm",
-              "label": "롤백 절차 확인",
-              "checked": false
-            }
-          ]
         }
       ]
     }
