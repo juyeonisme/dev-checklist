@@ -28,6 +28,11 @@
               "id": "mo0vptfbhukb",
               "label": "다시 한 번 검토한 뒤 나마에상께 리뷰 부탁",
               "checked": false
+            },
+            {
+              "id": "mo11lebua0j5",
+              "label": "화면설계서 ppt를 기반으로 한 검토 1",
+              "checked": false
             }
           ]
         }
