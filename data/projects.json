@@ -32,43 +32,6 @@
           ]
         },
         {
-          "id": "mo0vptfb9hxo",
-          "name": "SQL / DB",
-          "open": true,
-          "items": [
-            {
-              "id": "mo0vptfbnpk6",
-              "label": "SQL 문법 오류 검증",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbzrdb",
-              "label": "인덱스 설계 확인",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfb1hd4",
-              "label": "NULL 허용/불허 확인",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbyxtz",
-              "label": "트랜잭션 범위 확인",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbgc4c",
-              "label": "마이그레이션 스크립트 검토",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfbnf9z",
-              "label": "롤백 스크립트 준비",
-              "checked": false
-            }
-          ]
-        },
-        {
           "id": "mo0vptfbsb4t",
           "name": "개발",
           "open": true,
