@@ -32,33 +32,6 @@
           ]
         },
         {
-          "id": "mo0vptfb4638",
-          "name": "테스트",
-          "open": true,
-          "items": [
-            {
-              "id": "mo0vptfbck32",
-              "label": "기능 테스트 완료",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfb63jk",
-              "label": "엣지 케이스 테스트",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfb2pic",
-              "label": "DB 데이터 정합성 확인",
-              "checked": false
-            },
-            {
-              "id": "mo0vptfblrn1",
-              "label": "성능 테스트",
-              "checked": false
-            }
-          ]
-        },
-        {
           "id": "mo0vptfb7dt1",
           "name": "배포",
           "open": true,
