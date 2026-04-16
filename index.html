@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0e0e10;--bg2:#161618;--bg3:#1e1e21;
+    --border:#2a2a2e;--border2:#3a3a3e;
+    --text:#e8e8ec;--text2:#8888a0;--text3:#55556a;
+    --accent:#4ade80;--accent2:#16a34a;--accent-dim:#14532d;
+    --red:#f87171;--red-dim:#450a0a;
+    --amber:#fbbf24;--amber-dim:#451a03;
+    --blue:#60a5fa;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;}
+
+  /* Layout */
+  .shell{display:flex;height:100vh;overflow:hidden;}
+  .sidebar{width:240px;flex-shrink:0;border-right:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column;overflow:hidden;}
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+  /* Sidebar */
+  .sb-head{padding:16px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+  .logo{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--accent);letter-spacing:.05em;flex:1;}
+  .logo span{color:var(--text3);}
+  .sync-badge{font-size:10px;font-family:var(--mono);padding:2px 7px;border-radius:10px;cursor:default;white-space:nowrap;}
+  .sb-local{background:var(--amber-dim);color:var(--amber);}
+  .sb-ok{background:var(--accent-dim);color:var(--accent);}
+  .sb-err{background:var(--red-dim);color:var(--red);}
+  .sb-ing{background:var(--bg3);color:var(--text3);}
+
+  .sb-list{flex:1;overflow-y:auto;padding:8px;}
+  .sb-list::-webkit-scrollbar{width:4px;}
+  .sb-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+  .proj-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;transition:background .15s;margin-bottom:2px;}
+  .proj-item:hover{background:var(--bg3);}
+  .proj-item.active{background:var(--bg3);border-left:2px solid var(--accent);padding-left:8px;}
+  .proj-name{flex:1;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .proj-cnt{font-family:var(--mono);font-size:11px;color:var(--text3);}
+  .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+  .d-done{background:var(--accent);}
+  .d-prog{background:var(--amber);}
+  .d-todo{background:var(--text3);}
+
+  .sb-foot{padding:10px 8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;}
+  .btn-new{width:100%;padding:8px;background:transparent;border:1px dashed var(--border2);border-radius:6px;color:var(--text2);font-family:var(--sans);font-size:13px;cursor:pointer;transition:all .15s;}
+  .btn-new:hover{border-color:var(--accent);color:var(--accent);}
+  .btn-cfg{width:100%;padding:5px;background:transparent;border:none;color:var(--text3);font-family:var(--mono);font-size:11px;cursor:pointer;text-align:left;}
+  .btn-cfg:hover{color:var(--text2);}
+
+  /* Main */
+  .main-head{padding:20px 28px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;flex-shrink:0;}
+  .main-head h1{font-size:18px;font-weight:500;flex:1;}
+  .head-act{display:flex;gap:8px;align-items:center;}
+  .prog-chip{font-family:var(--mono);font-size:12px;padding:4px 10px;background:var(--bg3);border-radius:20px;color:var(--text2);border:1px solid var(--border);}
+  .prog-chip .dn{color:var(--accent);font-weight:500;}
+  .toolbar{padding:10px 28px;border-bottom:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
+  .content{flex:1;overflow-y:auto;padding:24px 28px;}
+  .content::-webkit-scrollbar{width:4px;}
+  .content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+  .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--text3);}
+
+  /* Buttons */
+  .btn{padding:6px 14px;border-radius:6px;font-family:var(--sans);font-size:13px;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .15s;}
+  .btn:hover{background:var(--bg3);color:var(--text);}
+  .btn.pri{background:var(--accent-dim);border-color:var(--accent2);color:var(--accent);}
+  .btn.pri:hover{background:var(--accent2);color:#fff;}
+  .btn.dng{border-color:var(--border2);color:var(--text3);}
+  .btn.dng:hover{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+
+  /* Phase */
+  .phase{border:1px solid var(--border);border-radius:10px;margin-bottom:16px;background:var(--bg2);overflow:hidden;}
+  .ph-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;}
+  .ph-head:hover{background:var(--bg3);}
+  .ph-title{flex:1;display:flex;align-items:center;gap:10px;}
+  .ph-name{font-size:14px;font-weight:500;color:var(--text);}
+  .ph-name-inp{background:transparent;border:none;border-bottom:1px solid var(--accent);color:var(--text);font-family:var(--sans);font-size:14px;font-weight:500;outline:none;width:200px;padding:2px 0;}
+  .ph-stat{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:10px;}
+  .s-done{background:var(--accent-dim);color:var(--accent);}
+  .s-prog{background:var(--amber-dim);color:var(--amber);}
+  .s-todo{background:var(--bg3);color:var(--text3);}
+  .ph-acts{display:flex;gap:4px;opacity:0;transition:opacity .15s;}
+  .ph-head:hover .ph-acts{opacity:1;}
+  .ic-btn{padding:4px 8px;background:transparent;border:1px solid transparent;border-radius:4px;color:var(--text3);cursor:pointer;font-size:12px;font-family:var(--mono);transition:all .15s;}
+  .ic-btn:hover{background:var(--bg3);border-color:var(--border2);color:var(--text);}
+  .ic-btn.dl:hover{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+  .ph-arrow{font-size:10px;color:var(--text3);transition:transform .2s;}
+  .ph-arrow.open{transform:rotate(90deg);}
+  .ph-prog{height:2px;background:var(--border);}
+  .ph-prog-fill{height:100%;background:var(--accent);transition:width .3s;}
+  .ph-body{display:none;}
+  .ph-body.open{display:block;}
+
+  /* Items */
+  .item{display:flex;align-items:flex-start;gap:12px;padding:10px 16px;border-top:1px solid var(--border);transition:background .1s;}
+  .item:hover{background:var(--bg3);}
+  .item-chk{margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--accent);cursor:pointer;}
+  .item-lbl{flex:1;line-height:1.5;color:var(--text);}
+  .item-lbl.done{color:var(--text3);text-decoration:line-through;}
+  .item-lbl-inp{background:transparent;border:none;border-bottom:1px solid var(--accent);color:var(--text);font-family:var(--sans);font-size:14px;outline:none;width:100%;padding:2px 0;line-height:1.5;}
+  .item-acts{display:flex;gap:4px;opacity:0;transition:opacity .15s;}
+  .item:hover .item-acts{opacity:1;}
+  .add-row{border-top:1px solid var(--border);padding:8px 16px;display:flex;gap:8px;align-items:center;}
+  .add-inp{flex:1;background:transparent;border:none;color:var(--text2);font-family:var(--sans);font-size:13px;outline:none;}
+  .add-inp::placeholder{color:var(--text3);}
+  .add-btn{font-size:13px;padding:4px 12px;background:transparent;border:1px solid var(--border2);border-radius:4px;color:var(--text3);cursor:pointer;font-family:var(--sans);}
+  .add-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* Modals */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:100;}
+  .overlay.open{display:flex;}
+  .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:24px;width:420px;max-width:95vw;}
+  .modal h2{font-size:16px;font-weight:500;margin-bottom:6px;}
+  .modal .sub{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.6;}
+  .modal label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
+  .modal input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:13px;padding:10px 12px;outline:none;margin-bottom:14px;}
+  .modal input:focus{border-color:var(--accent);}
+  .modal input.norm{font-family:var(--sans);font-size:14px;}
+  .modal-act{display:flex;gap:8px;justify-content:flex-end;margin-top:4px;}
+  .hint{font-size:11px;color:var(--text3);margin-top:-10px;margin-bottom:14px;line-height:1.5;}
+  .hint a{color:var(--blue);text-decoration:none;}
+  .hint a:hover{text-decoration:underline;}
+  .confirm-box{background:var(--bg2);border:1px solid var(--red);border-radius:10px;padding:20px 24px;width:300px;}
+  .confirm-box p{font-size:14px;margin-bottom:16px;color:var(--text2);}
+
+  /* Setup */
+  .setup{display:flex;align-items:center;justify-content:center;height:100vh;}
+  .setup-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:36px 40px;width:460px;max-width:95vw;}
+  .setup-card .logo{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--accent);letter-spacing:.05em;margin-bottom:8px;}
+  .setup-card h1{font-size:20px;font-weight:500;margin-bottom:8px;}
+  .setup-card p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:24px;}
+  .setup-card label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;}
+  .setup-card input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:13px;padding:10px 12px;outline:none;margin-bottom:6px;}
+  .setup-card input.norm{font-family:var(--sans);font-size:14px;}
+  .setup-card input:focus{border-color:var(--accent);}
+  .setup-hint{font-size:11px;color:var(--text3);margin-bottom:14px;line-height:1.5;}
+  .setup-hint a{color:var(--blue);text-decoration:none;}
+  .setup-hint a:hover{text-decoration:underline;}
+  .setup-row{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:8px;}
+  .btn-skip{background:transparent;border:none;color:var(--text3);font-size:12px;cursor:pointer;font-family:var(--sans);text-decoration:underline;}
+
+  /* Toast */
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-size:13px;font-family:var(--mono);z-index:999;opacity:0;transition:opacity .25s;pointer-events:none;}
+  .toast.show{opacity:1;}
+  .toast.ok{border-color:var(--accent2);color:var(--accent);}
+  .toast.err{border-color:var(--red);color:var(--red);}
+</style>
+</head>
+<body>
+
+<!-- Setup Screen -->
+<div id="setup-screen" class="setup" style="display:none;">
+  <div class="setup-card">
+    <div class="logo">DEV<span style="color:var(--text3)">/</span>CHECK</div>
+    <h1>GitHub 연동 설정</h1>
+    <p>체크 상태를 GitHub 저장소의 JSON 파일로 저장합니다.<br>어느 기기에서 열어도 동일한 상태를 유지할 수 있어요.</p>
+    <label>GitHub Personal Access Token</label>
+    <input type="password" id="s-tok" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <div class="setup-hint"><a href="https://github.com/settings/tokens/new?scopes=repo&description=DevChecklist" target="_blank">→ 토큰 발급 (repo 권한 필요)</a></div>
+    <label>저장소 (owner/repo)</label>
+    <input type="text" id="s-repo" class="norm" placeholder="예: myname/dev-checklist">
+    <div class="setup-hint">데이터는 <code style="color:var(--text2)">data/projects.json</code> 에 저장됩니다</div>
+    <label>브랜치 (기본: main)</label>
+    <input type="text" id="s-branch" class="norm" placeholder="main">
+    <div class="setup-row">
+      <button class="btn-skip" onclick="skipSetup()">GitHub 없이 로컬로 사용</button>
+      <button class="btn pri" onclick="saveSetup()">연결하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app" class="shell" style="display:none;">
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="logo">DEV<span>/</span>CHECK</div>
+      <span class="sync-badge sb-local" id="sync-badge">LOCAL</span>
+    </div>
+    <div class="sb-list" id="sb-list"></div>
+    <div class="sb-foot">
+      <button class="btn-new" onclick="openNewProj()">+ 새 작업 추가</button>
+      <button class="btn-cfg" onclick="openSettings()">⚙ GitHub 설정</button>
+    </div>
+  </aside>
+  <main class="main">
+    <div id="m-empty" class="content empty">
+      <div style="font-size:40px;margin-bottom:4px;">📋</div>
+      <p>왼쪽에서 작업을 선택하거나 새로 만드세요</p>
+    </div>
+    <div id="m-proj" style="display:none;flex-direction:column;height:100%;overflow:hidden;">
+      <div class="main-head">
+        <h1 id="proj-title">-</h1>
+        <div class="head-act">
+          <span class="prog-chip"><span class="dn" id="h-done">0</span> / <span id="h-total">0</span></span>
+          <button class="btn" onclick="openEditProj()">이름 편집</button>
+          <button class="btn" onclick="resetChecks()">초기화</button>
+          <button class="btn dng" onclick="confirmDelProj()">삭제</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="btn pri" onclick="addPhase()">+ 단계 추가</button>
+      </div>
+      <div class="content" id="phase-list"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Project modal -->
+<div class="overlay" id="m-proj-modal">
+  <div class="modal">
+    <h2 id="pm-title">새 작업 만들기</h2>
+    <div class="sub" id="pm-sub">기본 체크리스트 템플릿이 자동 포함됩니다.</div>
+    <label>작업 이름</label>
+    <input type="text" id="pm-inp" class="norm" placeholder="예: 회원가입 기능 개발" onkeydown="if(event.key==='Enter') saveProjModal()">
+    <div class="modal-act">
+      <button class="btn" onclick="closeProjModal()">취소</button>
+      <button class="btn pri" onclick="saveProjModal()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="overlay" id="m-settings">
+  <div class="modal">
+    <h2>GitHub 설정</h2>
+    <div class="sub">변경 후 저장하면 즉시 재연결합니다.</div>
+    <label>Personal Access Token</label>
+    <input type="password" id="cfg-tok" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <div class="hint"><a href="https://github.com/settings/tokens/new?scopes=repo&description=DevChecklist" target="_blank">→ 새 토큰 발급</a></div>
+    <label>저장소 (owner/repo)</label>
+    <input type="text" id="cfg-repo" class="norm" placeholder="myname/dev-checklist">
+    <label>브랜치</label>
+    <input type="text" id="cfg-branch" class="norm" placeholder="main">
+    <div class="modal-act">
+      <button class="btn dng" onclick="clearGH()">연동 해제</button>
+      <button class="btn" onclick="closeSettings()">취소</button>
+      <button class="btn pri" onclick="saveSettings()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm -->
+<div class="overlay" id="m-confirm">
+  <div class="confirm-box">
+    <p id="cf-msg"></p>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn" onclick="closeConfirm()">취소</button>
+      <button class="btn dng" id="cf-ok">삭제</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const LS_DATA = 'devcheck_v3';
+const LS_GH   = 'devcheck_gh';
+const DATA_PATH = 'data/projects.json';
+
+const DEFAULT_PHASES = [
+  {name:'설계',items:['요구사항 분석 및 확인','테이블 설계서 작성/검토','ERD 확인 (관계, 제약조건)','API 설계서 작성/검토']},
+  {name:'SQL / DB',items:['SQL 문법 오류 검증','인덱스 설계 확인','NULL 허용/불허 확인','트랜잭션 범위 확인','마이그레이션 스크립트 검토','롤백 스크립트 준비']},
+  {name:'개발',items:['코딩 컨벤션 준수','예외 처리 확인','단위 테스트 작성','코드 리뷰 완료','하드코딩 제거']},
+  {name:'테스트',items:['기능 테스트 완료','엣지 케이스 테스트','DB 데이터 정합성 확인','성능 테스트']},
+  {name:'배포',items:['환경변수/설정 파일 확인','DB 마이그레이션 순서 확인','배포 전 백업','배포 후 로그 모니터링','롤백 절차 확인']}
+];
+
+let state = {projects:[]};
+let gh = null;          // {token, repo, branch}
+let ghSha = null;
+let syncTimer = null;
+let syncing = false;
+let curProjId = null;
+let projModalMode = 'new';
+
+// ── Bootstrap ─────────────────────────────────────────────────────────
+function init() {
+  gh = loadGH();
+  const hasLocal = !!localStorage.getItem(LS_DATA);
+  if (!gh && !hasLocal) {
+    show('setup-screen'); return;
+  }
+  if (gh) { show('app'); boot(true); }
+  else    { show('app'); boot(false); }
+}
+function show(id) {
+  ['setup-screen','app'].forEach(i => document.getElementById(i).style.display = 'none');
+  document.getElementById(id).style.display = id === 'app' ? 'flex' : 'flex';
+}
+async function boot(withGH) {
+  if (withGH) {
+    badge('ing','SYNC...'); await loadGHData();
+  } else {
+    state = loadLocal(); badge('local','LOCAL');
+  }
+  renderSB(); renderMain();
+}
+
+// ── Storage ───────────────────────────────────────────────────────────
+function loadLocal()  { try{return JSON.parse(localStorage.getItem(LS_DATA))||{projects:[]}}catch{return{projects:[]};} }
+function saveLocal()  { localStorage.setItem(LS_DATA, JSON.stringify(state)); }
+function loadGH()     { try{return JSON.parse(localStorage.getItem(LS_GH))||null}catch{return null;} }
+function saveGH(cfg)  { localStorage.setItem(LS_GH, JSON.stringify(cfg)); }
+
+// ── GitHub API ────────────────────────────────────────────────────────
+const ghHeaders = () => ({'Authorization':`token ${gh.token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'});
+const ghBranch  = () => gh.branch||'main';
+const ghUrl     = (p) => `https://api.github.com/repos/${gh.repo}/contents/${p}`;
+
+async function loadGHData() {
+  try {
+    const res = await fetch(ghUrl(DATA_PATH)+`?ref=${ghBranch()}&t=${Date.now()}`, {headers:ghHeaders()});
+    if (res.status === 404) { state = loadLocal(); ghSha = null; badge('ok','SYNCED'); return; }
+    if (!res.ok) throw new Error(`${res.status}`);
+    const d = await res.json();
+    ghSha = d.sha;
+    state = JSON.parse(atob(d.content.replace(/\n/g,'')));
+    saveLocal(); badge('ok','SYNCED');
+  } catch(e) {
+    state = loadLocal(); badge('err','ERROR');
+    toast('GitHub 연결 실패 — 로컬로 실행 중','err');
+  }
+}
+
+async function pushGH() {
+  if (!gh || syncing) return;
+  syncing = true; badge('ing','SYNC...');
+  saveLocal();
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(state,null,2))));
+    const body = {message:`chore: update checklist ${new Date().toISOString()}`, content, branch:ghBranch()};
+    if (ghSha) body.sha = ghSha;
+    const res = await fetch(ghUrl(DATA_PATH), {method:'PUT',headers:ghHeaders(),body:JSON.stringify(body)});
+    if (!res.ok) {
+      const err = await res.json();
+      if (err.message?.includes('sha')) { await loadGHData(); syncing=false; schedule(); return; }
+      throw new Error(err.message);
+    }
+    ghSha = (await res.json()).content.sha;
+    badge('ok','SYNCED');
+  } catch(e) {
+    badge('err','SAVE ERR'); toast('저장 실패: '+e.message,'err');
+  }
+  syncing = false;
+}
+
+function schedule() {
+  saveLocal();
+  if (!gh) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(pushGH, 1200);
+}
+
+function badge(type, text) {
+  const el = document.getElementById('sync-badge');
+  el.className = `sync-badge sb-${type}`;
+  el.textContent = text;
+}
+
+// ── Setup ─────────────────────────────────────────────────────────────
+async function saveSetup() {
+  const tok  = document.getElementById('s-tok').value.trim();
+  const repo = document.getElementById('s-repo').value.trim();
+  const br   = document.getElementById('s-branch').value.trim()||'main';
+  if (!tok||!repo) { toast('토큰과 저장소를 모두 입력해주세요','err'); return; }
+  gh = {token:tok, repo, branch:br}; saveGH(gh);
+  show('app'); await boot(true);
+}
+function skipSetup() { gh=null; show('app'); boot(false); }
+
+// ── Settings ──────────────────────────────────────────────────────────
+function openSettings() {
+  if (gh) {
+    document.getElementById('cfg-tok').value = gh.token||'';
+    document.getElementById('cfg-repo').value = gh.repo||'';
+    document.getElementById('cfg-branch').value = gh.branch||'main';
+  }
+  document.getElementById('m-settings').classList.add('open');
+}
+function closeSettings() { document.getElementById('m-settings').classList.remove('open'); }
+async function saveSettings() {
+  const tok  = document.getElementById('cfg-tok').value.trim();
+  const repo = document.getElementById('cfg-repo').value.trim();
+  const br   = document.getElementById('cfg-branch').value.trim()||'main';
+  if (!tok||!repo) { toast('토큰과 저장소를 입력해주세요','err'); return; }
+  gh = {token:tok, repo, branch:br}; ghSha=null; saveGH(gh);
+  closeSettings(); badge('ing','SYNC...'); await loadGHData();
+  renderSB(); renderMain();
+}
+function clearGH() {
+  localStorage.removeItem(LS_GH); gh=null; ghSha=null;
+  closeSettings(); badge('local','LOCAL'); toast('GitHub 연동 해제됨','ok');
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────
+const uid  = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc  = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const proj = () => state.projects.find(p=>p.id===curProjId);
+function stats(p) {
+  let t=0,d=0; p.phases.forEach(ph=>ph.items.forEach(it=>{t++;if(it.checked)d++;}));
+  return {t,d};
+}
+
+let toastTmr;
+function toast(msg, type='ok') {
+  const el = document.getElementById('toast');
+  el.textContent=msg; el.className=`toast show ${type}`;
+  clearTimeout(toastTmr); toastTmr=setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+// ── Sidebar ───────────────────────────────────────────────────────────
+function renderSB() {
+  const el = document.getElementById('sb-list');
+  if (!state.projects.length) {
+    el.innerHTML='<div style="padding:16px 10px;font-size:12px;color:var(--text3);text-align:center;">작업이 없습니다</div>'; return;
+  }
+  el.innerHTML = state.projects.map(p=>{
+    const {t,d}=stats(p);
+    const dot = d===t&&t>0?'d-done':d>0?'d-prog':'d-todo';
+    return `<div class="proj-item ${p.id===curProjId?'active':''}" onclick="selProj('${p.id}')">
+      <div class="dot ${dot}"></div>
+      <span class="proj-name">${esc(p.name)}</span>
+      <span class="proj-cnt">${d}/${t}</span>
+    </div>`;
+  }).join('');
+}
+function selProj(id) { curProjId=id; renderSB(); renderMain(); }
+
+// ── Main ──────────────────────────────────────────────────────────────
+function renderMain() {
+  const p = proj();
+  document.getElementById('m-empty').style.display = p?'none':'flex';
+  const mp = document.getElementById('m-proj');
+  mp.style.display = p?'flex':'none';
+  if (!p) return;
+  document.getElementById('proj-title').textContent = p.name;
+  const {t,d}=stats(p);
+  document.getElementById('h-done').textContent=d;
+  document.getElementById('h-total').textContent=t;
+  const el=document.getElementById('phase-list');
+  if (!p.phases.length) { el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:32px 0 0;">단계가 없습니다.</div>'; return; }
+  el.innerHTML = p.phases.map(ph=>rPhase(ph)).join('');
+}
+
+function rPhase(ph) {
+  const d=ph.items.filter(i=>i.checked).length, t=ph.items.length;
+  const pct=t?Math.round(d/t*100):0;
+  const sc=d===t&&t>0?'s-done':d>0?'s-prog':'s-todo';
+  const st=d===t&&t>0?'완료':`${d}/${t}`;
+  const open=ph.open!==false;
+  return `<div class="phase" id="ph-${ph.id}">
+    <div class="ph-head" onclick="togPhase('${ph.id}')">
+      <div class="ph-title">
+        <span class="ph-name" id="pn-${ph.id}">${esc(ph.name)}</span>
+        <span class="ph-stat ${sc}" id="ps-${ph.id}">${st}</span>
+      </div>
+      <div class="ph-acts" onclick="event.stopPropagation()">
+        <button class="ic-btn" onclick="editPhase('${ph.id}')">편집</button>
+        <button class="ic-btn dl" onclick="delPhase('${ph.id}')">삭제</button>
+      </div>
+      <span class="ph-arrow ${open?'open':''}" id="ar-${ph.id}">▶</span>
+    </div>
+    <div class="ph-prog"><div class="ph-prog-fill" id="pp-${ph.id}" style="width:${pct}%"></div></div>
+    <div class="ph-body ${open?'open':''}" id="pb-${ph.id}">
+      ${ph.items.map(it=>rItem(ph.id,it)).join('')}
+      <div class="add-row">
+        <input class="add-inp" placeholder="+ 항목 추가..." id="ai-${ph.id}" onkeydown="if(event.key==='Enter')addItem('${ph.id}')">
+        <button class="add-btn" onclick="addItem('${ph.id}')">추가</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function rItem(phId, it) {
+  return `<div class="item" id="it-${it.id}">
+    <input type="checkbox" class="item-chk" ${it.checked?'checked':''} onchange="togItem('${phId}','${it.id}',this.checked)">
+    <span class="item-lbl ${it.checked?'done':''}" id="il-${it.id}">${esc(it.label)}</span>
+    <div class="item-acts">
+      <button class="ic-btn" onclick="editItem('${phId}','${it.id}')">편집</button>
+      <button class="ic-btn dl" onclick="delItem('${phId}','${it.id}')">삭제</button>
+    </div>
+  </div>`;
+}
+
+// ── Phase actions ─────────────────────────────────────────────────────
+function togPhase(phId) {
+  const ph=proj().phases.find(p=>p.id===phId);
+  ph.open = ph.open===false ? true : false;
+  schedule();
+  document.getElementById('pb-'+phId).classList.toggle('open', ph.open!==false);
+  document.getElementById('ar-'+phId).classList.toggle('open', ph.open!==false);
+}
+function addPhase() {
+  const p=proj(); const ph={id:uid(),name:'새 단계',items:[],open:true};
+  p.phases.push(ph); schedule();
+  const el=document.getElementById('phase-list');
+  if (p.phases.length===1){renderMain();return;}
+  el.insertAdjacentHTML('beforeend',rPhase(ph));
+}
+function editPhase(phId) {
+  const ph=proj().phases.find(p=>p.id===phId);
+  const el=document.getElementById('pn-'+phId); const orig=ph.name;
+  el.style.display='none';
+  const inp=document.createElement('input'); inp.className='ph-name-inp'; inp.value=orig;
+  el.insertAdjacentElement('afterend',inp); inp.focus(); inp.select();
+  const done=()=>{ const v=inp.value.trim(); if(v&&v!==orig){ph.name=v;schedule();el.textContent=v;} inp.remove();el.style.display=''; };
+  inp.onblur=done; inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape'){inp.value=orig;inp.blur();}};
+}
+function delPhase(phId) {
+  confirm2('이 단계를 삭제할까요?',()=>{
+    const p=proj(); p.phases=p.phases.filter(ph=>ph.id!==phId); schedule();
+    document.getElementById('ph-'+phId).remove();
+    if(!p.phases.length)renderMain();
+    updHead(); renderSB();
+  });
+}
+
+// ── Item actions ──────────────────────────────────────────────────────
+function togItem(phId, itId, checked) {
+  const p=proj(); const ph=p.phases.find(x=>x.id===phId);
+  ph.items.find(i=>i.id===itId).checked=checked; schedule();
+  document.getElementById('il-'+itId).className='item-lbl'+(checked?' done':'');
+  updPhase(p,ph); updHead(); renderSB();
+}
+function addItem(phId) {
+  const inp=document.getElementById('ai-'+phId); const label=inp.value.trim(); if(!label)return;
+  const p=proj(); const ph=p.phases.find(x=>x.id===phId);
+  const it={id:uid(),label,checked:false}; ph.items.push(it); schedule();
+  inp.value=''; inp.closest('.add-row').insertAdjacentHTML('beforebegin',rItem(phId,it));
+  updPhase(p,ph); updHead(); renderSB();
+}
+function editItem(phId, itId) {
+  const p=proj(); const it=p.phases.find(x=>x.id===phId).items.find(i=>i.id===itId);
+  const el=document.getElementById('il-'+itId); el.style.display='none';
+  const inp=document.createElement('input'); inp.className='item-lbl-inp'; inp.value=it.label;
+  el.insertAdjacentElement('afterend',inp); inp.focus(); inp.select();
+  const done=()=>{ const v=inp.value.trim(); if(v&&v!==it.label){it.label=v;schedule();el.textContent=v;} inp.remove();el.style.display=''; };
+  inp.onblur=done; inp.onkeydown=e=>{if(e.key==='Enter')inp.blur();if(e.key==='Escape'){inp.value=it.label;inp.blur();}};
+}
+function delItem(phId, itId) {
+  const p=proj(); const ph=p.phases.find(x=>x.id===phId);
+  ph.items=ph.items.filter(i=>i.id!==itId); schedule();
+  document.getElementById('it-'+itId).remove();
+  updPhase(p,ph); updHead(); renderSB();
+}
+
+function updPhase(p, ph) {
+  const d=ph.items.filter(i=>i.checked).length, t=ph.items.length;
+  const pct=t?Math.round(d/t*100):0;
+  const sc=d===t&&t>0?'s-done':d>0?'s-prog':'s-todo';
+  const st=d===t&&t>0?'완료':`${d}/${t}`;
+  const ps=document.getElementById('ps-'+ph.id); if(ps){ps.className=`ph-stat ${sc}`;ps.textContent=st;}
+  const pp=document.getElementById('pp-'+ph.id); if(pp) pp.style.width=pct+'%';
+}
+function updHead() {
+  const p=proj(); if(!p)return;
+  const {t,d}=stats(p);
+  document.getElementById('h-done').textContent=d;
+  document.getElementById('h-total').textContent=t;
+}
+
+// ── Project modal ─────────────────────────────────────────────────────
+function openNewProj() {
+  projModalMode='new';
+  document.getElementById('pm-title').textContent='새 작업 만들기';
+  document.getElementById('pm-sub').textContent='기본 체크리스트 템플릿이 자동 포함됩니다.';
+  document.getElementById('pm-inp').value='';
+  document.getElementById('m-proj-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('pm-inp').focus(),50);
+}
+function openEditProj() {
+  projModalMode='edit';
+  document.getElementById('pm-title').textContent='작업 이름 편집';
+  document.getElementById('pm-sub').textContent='';
+  document.getElementById('pm-inp').value=proj().name;
+  document.getElementById('m-proj-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('pm-inp').focus(),50);
+}
+function closeProjModal() { document.getElementById('m-proj-modal').classList.remove('open'); }
+function saveProjModal() {
+  const name=document.getElementById('pm-inp').value.trim(); if(!name)return;
+  if (projModalMode==='new') {
+    const p={id:uid(),name,phases:DEFAULT_PHASES.map(dp=>({id:uid(),name:dp.name,open:true,items:dp.items.map(l=>({id:uid(),label:l,checked:false}))}))};
+    state.projects.push(p); schedule(); closeProjModal(); selProj(p.id);
+  } else {
+    proj().name=name; schedule(); closeProjModal();
+    document.getElementById('proj-title').textContent=name; renderSB();
+  }
+}
+function confirmDelProj() {
+  confirm2('이 작업을 삭제할까요? 복구할 수 없습니다.',()=>{
+    state.projects=state.projects.filter(p=>p.id!==curProjId);
+    curProjId=null; schedule(); renderSB(); renderMain();
+  });
+}
+function resetChecks() {
+  confirm2('모든 체크를 초기화할까요?',()=>{
+    proj().phases.forEach(ph=>ph.items.forEach(it=>it.checked=false));
+    schedule(); renderMain(); renderSB();
+  });
+}
+
+// ── Confirm ───────────────────────────────────────────────────────────
+function confirm2(msg, cb) {
+  document.getElementById('cf-msg').textContent=msg;
+  document.getElementById('cf-ok').onclick=()=>{closeConfirm();cb();};
+  document.getElementById('m-confirm').classList.add('open');
+}
+function closeConfirm() { document.getElementById('m-confirm').classList.remove('open'); }
+
+// ── Overlay dismiss ───────────────────────────────────────────────────
+['m-proj-modal','m-settings','m-confirm'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{
+    if(e.target===e.currentTarget){
+      if(id==='m-proj-modal') closeProjModal();
+      else if(id==='m-settings') closeSettings();
+      else closeConfirm();
+    }
+  });
+});
+
+init();
+</script>
+</body>
+</html>
