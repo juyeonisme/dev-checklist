@@ -1,0 +1,165 @@
+{
+  "projects": [
+    {
+      "id": "mo0vptfbc9gu",
+      "name": "vehicle-config-space",
+      "phases": [
+        {
+          "id": "mo0vptfbg9v9",
+          "name": "설계",
+          "open": true,
+          "items": [
+            {
+              "id": "mo0vptfbd15s",
+              "label": "요구사항 분석 및 확인",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfb0t4e",
+              "label": "테이블 설계서 작성/검토",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbaonf",
+              "label": "ERD 확인 (관계, 제약조건)",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbhukb",
+              "label": "API 설계서 작성/검토",
+              "checked": false
+            }
+          ]
+        },
+        {
+          "id": "mo0vptfb9hxo",
+          "name": "SQL / DB",
+          "open": true,
+          "items": [
+            {
+              "id": "mo0vptfbnpk6",
+              "label": "SQL 문법 오류 검증",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbzrdb",
+              "label": "인덱스 설계 확인",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfb1hd4",
+              "label": "NULL 허용/불허 확인",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbyxtz",
+              "label": "트랜잭션 범위 확인",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbgc4c",
+              "label": "마이그레이션 스크립트 검토",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbnf9z",
+              "label": "롤백 스크립트 준비",
+              "checked": false
+            }
+          ]
+        },
+        {
+          "id": "mo0vptfbsb4t",
+          "name": "개발",
+          "open": true,
+          "items": [
+            {
+              "id": "mo0vptfb33ys",
+              "label": "코딩 컨벤션 준수",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfb7n99",
+              "label": "예외 처리 확인",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbpyfg",
+              "label": "단위 테스트 작성",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfb8tpv",
+              "label": "코드 리뷰 완료",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbnio5",
+              "label": "하드코딩 제거",
+              "checked": false
+            }
+          ]
+        },
+        {
+          "id": "mo0vptfb4638",
+          "name": "테스트",
+          "open": true,
+          "items": [
+            {
+              "id": "mo0vptfbck32",
+              "label": "기능 테스트 완료",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfb63jk",
+              "label": "엣지 케이스 테스트",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfb2pic",
+              "label": "DB 데이터 정합성 확인",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfblrn1",
+              "label": "성능 테스트",
+              "checked": false
+            }
+          ]
+        },
+        {
+          "id": "mo0vptfb7dt1",
+          "name": "배포",
+          "open": true,
+          "items": [
+            {
+              "id": "mo0vptfb4mtb",
+              "label": "환경변수/설정 파일 확인",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbu87o",
+              "label": "DB 마이그레이션 순서 확인",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbdwyl",
+              "label": "배포 전 백업",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbkals",
+              "label": "배포 후 로그 모니터링",
+              "checked": false
+            },
+            {
+              "id": "mo0vptfbptlm",
+              "label": "롤백 절차 확인",
+              "checked": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
