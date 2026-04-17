@@ -6,37 +6,37 @@
       "phases": [
         {
           "id": "mo0vptfbg9v9",
-          "name": "설계",
+          "name": "ì¤ê³",
           "open": true,
           "items": [
             {
               "id": "mo0vptfbd15s",
-              "label": "유저그룹 관련 업데이트",
+              "label": "ì ì ê·¸ë£¹ ê´ë ¨ ìë°ì´í¸",
               "checked": false
             },
             {
               "id": "mo0vptfb0t4e",
-              "label": "에러 메시지 통일(입력해주세요만)",
+              "label": "ìë¬ ë©ìì§ íµì¼(ìë ¥í´ì£¼ì¸ìë§)",
               "checked": false
             },
             {
               "id": "mo0vptfbaonf",
-              "label": "ERD 확인 (관계, 제약조건), 수정할 수 있는 부분은 수정할 것.",
+              "label": "ERD íì¸ (ê´ê³, ì ì½ì¡°ê±´), ìì í  ì ìë ë¶ë¶ì ìì í  ê².",
               "checked": false
             },
             {
               "id": "mo0vptfbhukb",
-              "label": "다시 한 번 검토한 뒤 나마에상께 리뷰 부탁",
+              "label": "ë¤ì í ë² ê²í í ë¤ ëë§ììê» ë¦¬ë·° ë¶í",
               "checked": false
             },
             {
               "id": "mo11lebua0j5",
-              "label": "화면설계서 ppt를 기반으로 한 검토 1",
+              "label": "íë©´ì¤ê³ì pptë¥¼ ê¸°ë°ì¼ë¡ í ê²í  1",
               "checked": false
             },
             {
               "id": "mo11lt2xpih6",
-              "label": "테스트 자료 기반으로 한 검토 2",
+              "label": "íì¤í¸ ìë£ ê¸°ë°ì¼ë¡ í ê²í  2",
               "checked": false
             }
           ]
